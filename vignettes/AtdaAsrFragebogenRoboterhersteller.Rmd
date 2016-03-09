@@ -1,0 +1,325 @@
+---
+output: pdf_document
+documentclass: scrreprt
+classoption: 12pt,fleqn
+geometry: top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm
+---
+
+\thispagestyle{empty}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+### # initialize section counter
+robjSecEnum <- rqudocuhelper::SectionEnumerator$new()
+robjSecEnum$setNrExtraHash(pnNrExtraHash = 1)
+```
+
+![Qualitas Logo](png/QualitasLogo.png)
+
+\fcolorbox{black}{white}{
+	\parbox[t]{1.0\linewidth}{
+		\centering \fontsize{12pt}{20pt}\selectfont % 
+		\vspace*{0.5cm} % 
+
+		\hfill Fragebogen
+
+		\vspace*{0.5cm} 
+	}
+}
+
+\vspace*{0.5cm}
+
+\fcolorbox{black}{white}{
+	\parbox[t]{1.0\linewidth}{
+		\centering \fontsize{25pt}{40pt}\selectfont %
+		\vspace*{0.7cm}
+    Fragen an Melkroboterhersteller   \\
+    betreffend des                    \\
+    Automatisierten Tierdatenaustauschs \\
+
+		\vspace*{0.7cm} % Space between the end of the title and the bottom of the grey box
+	}
+}
+
+\vspace*{1cm}
+
+\begin{center}
+\includegraphics[width=0.5\textwidth]{png/Pedigree.png}
+\end{center}
+
+\vspace{5ex}
+{\centering \small
+\hfill
+\begin{tabular}{l}
+Peter von Rohr                      \\
+FB EDV, Qualitas AG                 \\
+Chamerstrasse 56, 6300 Zug          \\
+\verb+http://www.qualitasag.ch+     \\
+\verb+peter.vonrohr@qualitasag.ch+  
+\end{tabular}
+}
+
+\pagebreak
+
+
+```{r DocumentStatus, results='asis'}
+## Dokumentenstatus
+sVersion <- c("0.0.0.900",
+             "0.0.0.901",
+             "0.0.0.902",
+             "0.0.0.903")
+nNrVersions <- length(sVersion)
+
+dtDatum <- c(format(as.Date("02.03.2016", "%d.%m.%Y"), "%d.%m.%Y"),
+             format(as.Date("03.03.2016", "%d.%m.%Y"), "%d.%m.%Y"),
+             format(as.Date("08.03.2016", "%d.%m.%Y"), "%d.%m.%Y"),
+             format(as.Date("09.03.2016", "%d.%m.%Y"), "%d.%m.%Y"))
+nNrDatum <- length(dtDatum)
+
+sChange <- c("Initialisierung",
+             "Erklärung, Einleitung und Fragen zur Melkanalage",
+             "Exportfunktionalitäten, Datenübertragung",
+             "Korrekturen, Ergänzungen bei Frage 8, persönliche Angaben")
+nNrChange <- length(sChange)
+
+### # length consistency
+stopifnot(nNrVersions == nNrDatum & nNrVersions == nNrChange)
+dfDocumentstatus <- data.frame(Version = sVersion,
+                               Datum   = dtDatum,
+                               Wer     = rep(Sys.info()[["user"]], length(sVersion)),
+                               Aenderung = sChange)
+#knitr::kable(dfDocumentstatus)
+```
+
+
+## Abkürzungen
+```{r Abkuerzungen, results='asis'}
+dfAbbreviation <- data.frame(Abk = c("ATDA",
+                                     "ASR",
+                                     "ATDA-ASR",
+                                     "API",
+                                     "IP",
+                                     "IPv4",
+                                     "IPv6"),
+                             Bedeutung = c("Automatisierter Tierdatenaustausch",
+                                           "Arbeitsgruppe Schweizerischer Rinderzüchter",
+                                           "Projekt zum automatisierten Tierdatenaustausch der ASR",
+                                           "Application Programming Interface",
+                                           "Internet Protokoll",
+                                           "Version 4 des Internet Protokolls",
+                                           "Version 6 des Internet Protokolls"))
+knitr::kable(dfAbbreviation)
+```
+
+
+\pagebreak
+
+## Vertraulichkeitserklärung
+Die in diesem Dokument gemachten Angaben werden __streng vertraulich__ behandelt.
+
+
+## Einleitung
+Dieses Dokument enthält eine Liste von Fragen, welche im Zusammenhang mit dem Projekt zum automatisierten 
+Tierdatenaustausch (`ATDA-ASR`) stehen. Die Fragen sind an die Hersteller von Melkrobotern gerichtet und 
+sie betreffen gewisse technische Eigenschaften der Melksysteme. Als Grundlage für die hier gestellten Fragen 
+haben wir einen gewissen Ablauf für den Datenaustausch zwischen Melksystemen und dem Informationssystem 
+der Zuchtorganisationen bei Qualitas AG angenommen (siehe nachfolgende Abbildung). 
+
+
+### Ablauf des Datenaustauschs
+Wir nehmen an, dass sich der Datenaustausch in drei Abschnitte gliedern lässt.
+
+1. Datenbereitstellung und Datenexport auf dem Informationssystem der Melkanlage
+2. Datenübertragung vom Informationssystem der Melkanlage zum Informationssystem der Zuchtorganisationen
+3. Import der übertragenen Daten ins Informationssystem der Zuchtorganisationen bei Qualitas AG
+
+Der dritte Abschnitt des Datenaustauschs ist unabhängig von den Gegebenheiten der einzelnen Roboteranlagen. Deshalb wird dieses Thema in diesem Fragebogen nicht weiter behandelt.
+
+
+```{r DiagrammDirekterDatentransfer, results='asis'}
+rqudocuhelper::insertOdgFigureAsPdf(psOdgFileStem = "Diagramm_DirekterDatentransfer")
+```
+
+
+\pagebreak
+
+\vspace{1ex}
+```{r DatenbereitstellungSection, results='asis'}
+robjSecEnum$displayNumSection("## Datenbereitstellung")
+```
+
+\vspace{1ex}
+```{r ArchitekturSection, results='asis'}
+robjSecEnum$displayNumSection("### Architektur des Informationssystems der Melkanlage")
+```
+Die vom Melkroboter gesammelten Daten werden in einem Informationssystem dauerhaft gespeichert. Für dieses Projekt (`ATDA-ASR`) sind in erster Linie die Milchmengendaten von grossem Interesse. Deshalb möchten wir mit dieser Frage einige Informationen zum Aufbau des Informationssystems der Melkanlage in Erfahrung bringen. 
+
+\question{\textbf{Frage 1: Wie sieht die Architektur des Informationssystems der Melkanlage aus?}}
+
+\begin{longanswersC}
+\item Es ist eine Datenbank \\ (Bitte weiter mit Frage 2)\vspace{0.1cm}
+\item Es besteht aus Dateien und Verzeichnissen \\ (Bitte weiter mit Frage 3)\vspace{0.1cm}
+\item Es handelt sich um eine andere Architektur \\ (Bitte weiter mit Frage 3)\vspace{0.1cm}
+\\ Welche?\linetext{}
+\end{longanswersC}
+
+\line
+
+\vspace{1ex}
+```{r HerstellerDbSection, results='asis'}
+robjSecEnum$displayNumSection("### Hersteller der Datenbank")
+```
+Verschiedene Hersteller von Datenbanken haben unterschiedliche Zusatzfunktionalitäten eingebaut. Deshalb ist es für das Projekt (`ATDA-ASR`) interessant, welche Datenbanken eingesetzt werden.
+
+\begin{coloredfilter}
+\question{\textbf{Frage 2: Von welchem Hersteller stammt die eingesetzte Datenbank?}}
+
+\begin{longanswersC}
+\item Microsoft SQL \vspace{0.1cm}
+\item Oracle \vspace{0.1cm}
+\item MySQL \vspace{0.1cm}
+\item Informix \vspace{0.1cm}
+\item ein anderer Hersteller \vspace{0.1cm}
+\\ Welcher? \linetext{}
+\end{longanswersC}
+
+\end{coloredfilter}
+
+\pagebreak
+
+```{r OsAmsSection, results='asis'}
+robjSecEnum$displayNumSection("### Betriebssystem des Informationssystems der Melkanlage")
+```
+Für den Datenaustausch werden gewisse Programme benötigt. Diese Programme müssen auf dem Informationssystem der Melkanlage installiert werden. Deshalb spielt das Betriebssystem des Rechners des Informationssystems der Melkanlage eine wichtige Rolle. 
+
+\question{\textbf{Frage 3: Welches Betriebssystem wird auf dem Rechner des Informationssystems der Melkanlage eingesetzt?}}
+
+
+\begin{longanswersC}
+\item Microsoft Windows 7 \vspace{0.1cm}
+\item Microsoft Windows 8 (8.1) \vspace{0.1cm}
+\item Microsoft Windows 10 \vspace{0.1cm}
+\item Mac OS X \vspace{0.1cm}
+\item Linux \vspace{0.1cm}
+\item ein anderes Betriebssystem \vspace{0.1cm}
+\\ Welches? \linetext{}
+\end{longanswersC}
+
+\line
+
+```{r ExportFuncSection, results='asis'}
+robjSecEnum$displayNumSection("### Exportfunktionalität")
+```
+Bevor Daten ausgetauscht werden können, müssen diese zuerst aus dem Informationssystem der Melkanlage exportiert werden. Die folgende Frage thematisiert die Exportfunktionalitäten im Informationssystem der Melkanlage, welche für einen Datenaustausch schon nutzbar wären.
+
+\question{\textbf{Frage 4: Welcher Typ von Exportfunktionalität existiert im  Informationssystem der Melkanlage?}}
+
+\begin{longanswersC}
+\item Daten können in Dateien exportiert werden \vspace{0.1cm}
+\item Daten können per Datenschnittstelle (API) exportiert werden \vspace{0.1cm}
+\item Die Milchmenge einer Kuh zu einem bestimmten Zeitpunkt kann exportiert werden \vspace{0.1cm}
+\item Milchmengen von mehreren Kühen über eine gewisse Zeitdauer können exportiert werden \vspace{0.1cm}
+\end{longanswersC}
+
+\pagebreak
+
+\vspace{1ex}
+```{r DatenUebertragungSection, results='asis'}
+robjSecEnum$displayNumSection("## Datenübertragung")
+robjSecEnum$displayNumSection("### Netzanbindung")
+```
+Für den Datenaustausch zwischen dem Informationssystem der Melkanlage und dem Informationssystem der Zuchtorganisationen bei Qualitas AG braucht es eine Internet-basierte Verbindung zwischen diesen Informationssystemen. In den folgenden Fragen sind wir daran interessiert, etwas mehr über die Verbindung der Informationssysteme mit dem Internet zu erfahren.
+
+\question{\textbf{Frage 5: Wie sieht die Verbindung des Informationssystems der Melkanlage mit dem Internet aus?}}
+
+\begin{longanswersC}
+\item Informationssystem der Melkanlage hat eine öffentliche IP-Adresse
+  \\ (d.h. die IP-Adresse beginnt weder mit 10. noch mit 172. noch mit 192.) \vspace{0.1cm}
+\item Informationssystem der Melkanlage ist via eine Firewall oder einen Router an das Internet angeschlossen 
+  \\ (d.h. die IP-Adresse beginnt mit 10. oder mit 172. oder mit 192.) \vspace{0.1cm}
+\item Eine andere Art der Verbindung
+  \\ Welche? \linetext{}
+\end{longanswersC}
+
+\line
+
+\question{\textbf{Frage 6: Welcher Version des IP-Protokolls wird verwendet?}}
+
+\begin{longanswersC}
+\item Version IPv4 (Normalfall)\vspace{0.1cm}
+\item Version IPv6\vspace{0.1cm}
+\item Sowohl IPv4 als auch IPv6
+\end{longanswersC}
+
+
+\pagebreak
+
+```{r ExterneProgramme, results='asis'}
+robjSecEnum$displayNumSection("### Externe Programme")
+```
+Je nach gewählter Art der Datenübertragung, sind wir darauf angewiesen, dass gewisse Softwareprogramme bereits auf dem Rechner des Informationssystems der Melkanlage installiert sind, oder dass Softwareprogramme von externen Anbietern installiert werden können. Anhand der folgenden Fragen möchten wir einerseits wissen, welche Programme schon vorhanden sind und ob die Möglichkeit besteht, zusätzliche Programme zu installieren.
+
+\question{\textbf{Frage 7: Besteht die Möglichkeit auf dem Rechner des Informationssystems der Melkanlage zusätzliche Programme zu installieren}}
+
+\begin{longanswersC}
+\item Ja, ohne Einschränkungen \vspace{0.1cm}
+\item Ja, nur eine beschränkte Auswahl von Programmen
+  \\ Welche? \linetext{} \vspace{0.1cm}
+\item Ja, nur von einer beschränkten Auswahl an Herstellern
+  \\ Welche? \linetext{}\vspace{0.1cm}
+\item Ja, nur durch Techniker der Melkanlagenhersteller\vspace{0.1cm}
+\item Nein
+\end{longanswersC}
+
+\line
+
+\question{\textbf{Frage 8: Welche Programme sind auf dem Rechner des Informationssystems der Melkanlage, abgesehen vom Betriebssystem und allen Programmen für die Melkanlage, schon installiert?}}
+
+\begin{longanswersC}
+\item Java älter als Version 1.6\vspace{0.1cm}
+\item Java Version 1.6\vspace{0.1cm}
+\item Java Version 1.7\vspace{0.1cm}
+\item Java Version 1.8\vspace{0.1cm}
+\item Weitere Programme\vspace{0.1cm}
+  \\ Welche? \linetext{}
+\end{longanswersC}
+
+\line\vspace{0.1cm}
+
+\line\vspace{0.1cm}
+
+\line\vspace{0.1cm}
+
+\pagebreak
+
+\vspace{1ex}
+```{r WeitereAngabenSection, results='asis'}
+robjSecEnum$displayNumSection("## Persönliche Angaben")
+```
+Damit wir die Antworten für das Projekt (`ATDA-ASR`) zuordnen und auswerten können, bitten wir Sie uns die folgenden  Informationen mitzuteilen.
+
+\question{\textbf{Frage 9: Wie lauten folgende Angaben?}}
+
+\begin{tabular}{|m{3cm}|m{8cm}|}
+\hline
+Name    &  \\[10pt]
+\hline
+Vorname &  \\[10pt]
+\hline
+Firma   &  \\[10pt]
+\hline
+Ort     &  \\[10pt]
+\hline
+Datum   &  \\[10pt]
+\hline
+\end{tabular}
+
+
+\vspace*{10ex}
+
+\line
+
+\vspace*{20ex}
+
+\centering \huge Vielen Dank für Ihre Mithilfe!!!

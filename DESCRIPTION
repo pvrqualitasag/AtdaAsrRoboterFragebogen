@@ -1,0 +1,11 @@
+Package: AtdaAsrRoboterFragebogen
+Title: Fragebogen fuer Roboterhersteller
+Version: 0.0.0.9000
+Description: Dieses Package beinhaltet den Fragebogen fuer die Melkroboterhersteller
+Depends: R (>= 3.2.3)
+License: LGPL-3
+LazyData: true
+Author: Peter von Rohr
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
