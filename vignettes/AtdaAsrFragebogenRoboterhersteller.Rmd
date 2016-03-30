@@ -1,8 +1,13 @@
 ---
-output: pdf_document
-documentclass: scrreprt
 classoption: 12pt,fleqn
+documentclass: scrreprt
 geometry: top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm
+output:
+  word_document: default
+  pdf_document:
+    includes:
+      in_header: tex/HybridFragenHeader.tex
+    template: tex/default-scrreprt.tex
 ---
 
 \thispagestyle{empty}
@@ -138,7 +143,7 @@ Der dritte Abschnitt des Datenaustauschs ist unabhängig von den Gegebenheiten d
 
 
 ```{r DiagrammDirekterDatentransfer, results='asis'}
-rqudocuhelper::insertOdgFigureAsPdf(psOdgFileStem = "Diagramm_DirekterDatentransfer")
+rqudocuhelper::insertOdgAsPdf(psOdgFileStem = "Diagramm_DirekterDatentransfer")
 ```
 
 
@@ -260,7 +265,7 @@ robjSecEnum$displayNumSection("### Externe Programme")
 ```
 Je nach gewählter Art der Datenübertragung, sind wir darauf angewiesen, dass gewisse Softwareprogramme bereits auf dem Rechner des Informationssystems der Melkanlage installiert sind, oder dass Softwareprogramme von externen Anbietern installiert werden können. Anhand der folgenden Fragen möchten wir einerseits wissen, welche Programme schon vorhanden sind und ob die Möglichkeit besteht, zusätzliche Programme zu installieren.
 
-\question{\textbf{Frage 7: Besteht die Möglichkeit auf dem Rechner des Informationssystems der Melkanlage zusätzliche Programme zu installieren}}
+\question{\textbf{Frage 7: Besteht die Möglichkeit auf dem Rechner des Informationssystems der Melkanlage zusätzliche Programme zu installieren?}}
 
 \begin{longanswersC}
 \item Ja, ohne Einschränkungen \vspace{0.1cm}
